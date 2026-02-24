@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Platby - výpočet</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%236366f1'/><stop offset='50%25' stop-color='%239333ea'/><stop offset='100%25' stop-color='%23ec4899'/></linearGradient></defs><rect width='100' height='100' rx='20' fill='url(%23g)'/><text x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>€</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* ===== Theme variables ===== */
+        :root {
+            --bg-body: #f1f5f9;
+            --bg-blob-1: rgba(99, 102, 241, 0.08);
+            --bg-blob-2: rgba(168, 85, 247, 0.06);
+            --bg-blob-3: rgba(59, 130, 246, 0.05);
+            --color-text: #1e293b;
+            --color-text-secondary: #475569;
+            --color-text-muted: #64748b;
+            --color-heading: #1e293b;
+            --bg-card: rgba(255, 255, 255, 0.82);
+            --bg-card-border: rgba(148, 163, 184, 0.2);
+            --bg-card-shadow: rgba(100, 116, 139, 0.1);
+            --bg-card-shadow-hover: rgba(100, 116, 139, 0.18);
+            --bg-card-hover-border: rgba(148, 163, 184, 0.35);
+            --card-title-color: #1e293b;
+            --card-title-border: rgba(148, 163, 184, 0.18);
+            --bg-info-row: rgba(241, 245, 249, 0.8);
+            --bg-info-row-border: rgba(226, 232, 240, 0.6);
+            --color-label: #64748b;
+            --color-value: #334155;
+            --color-accent: #6366f1;
+            --color-accent-2: #9333ea;
+            --color-accent-3: #ec4899;
+            --bg-section: rgba(255, 255, 255, 0.82);
+            --section-title-color: #1e293b;
+            --total-gradient-from: #6366f1;
+            --total-gradient-via: #9333ea;
+            --total-gradient-to: #ec4899;
+            --color-note: #64748b;
+            --color-update: #64748b;
+            --color-update-strong: #475569;
+            --scrollbar-thumb: rgba(148, 163, 184, 0.3);
+            --scrollbar-thumb-hover: rgba(148, 163, 184, 0.5);
+            --table-header-bg: rgba(99, 102, 241, 0.1);
+            --table-header-color: #4338ca;
+            --table-row-hover: rgba(99, 102, 241, 0.06);
+            --table-row-even: rgba(241, 245, 249, 0.6);
+            --table-border: rgba(226, 232, 240, 0.8);
+            --table-sum-bg: rgba(99, 102, 241, 0.08);
+            --badge-bg: rgba(99, 102, 241, 0.1);
+            --badge-color: #4338ca;
+            --badge-inkaso-bg: rgba(236, 72, 153, 0.1);
+            --badge-inkaso-color: #be185d;
+            --badge-other-bg: rgba(100, 116, 139, 0.1);
+            --badge-other-color: var(--color-text-muted);
+            --highlight-row-bg: rgba(236, 72, 153, 0.06);
+            --highlight-row-border: rgba(236, 72, 153, 0.3);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-body: #0f0f1a;
+                --bg-blob-1: rgba(88, 100, 240, 0.15);
+                --bg-blob-2: rgba(168, 85, 247, 0.12);
+                --bg-blob-3: rgba(59, 130, 246, 0.08);
+                --color-text: #e2e8f0;
+                --color-text-secondary: #94a3b8;
+                --color-text-muted: #64748b;
+                --color-heading: #ffffff;
+                --bg-card: rgba(255, 255, 255, 0.05);
+                --bg-card-border: rgba(255, 255, 255, 0.08);
+                --bg-card-shadow: rgba(0, 0, 0, 0.2);
+                --bg-card-shadow-hover: rgba(0, 0, 0, 0.3);
+                --bg-card-hover-border: rgba(255, 255, 255, 0.15);
+                --card-title-color: #e2e8f0;
+                --card-title-border: rgba(255, 255, 255, 0.08);
+                --bg-info-row: rgba(255, 255, 255, 0.04);
+                --bg-info-row-border: rgba(255, 255, 255, 0.04);
+                --color-label: #94a3b8;
+                --color-value: #cbd5e1;
+                --color-accent: #818cf8;
+                --color-accent-2: #c084fc;
+                --color-accent-3: #f472b6;
+                --bg-section: rgba(255, 255, 255, 0.05);
+                --section-title-color: #e2e8f0;
+                --total-gradient-from: #818cf8;
+                --total-gradient-via: #c084fc;
+                --total-gradient-to: #f472b6;
+                --color-note: #64748b;
+                --color-update: #64748b;
+                --color-update-strong: #94a3b8;
+                --scrollbar-thumb: rgba(255, 255, 255, 0.1);
+                --scrollbar-thumb-hover: rgba(255, 255, 255, 0.2);
+                --table-header-bg: rgba(99, 102, 241, 0.15);
+                --table-header-color: #a5b4fc;
+                --table-row-hover: rgba(99, 102, 241, 0.08);
+                --table-row-even: rgba(255, 255, 255, 0.03);
+                --table-border: rgba(255, 255, 255, 0.06);
+                --table-sum-bg: rgba(99, 102, 241, 0.12);
+                --badge-bg: rgba(129, 140, 248, 0.15);
+                --badge-color: #a5b4fc;
+                --badge-inkaso-bg: rgba(244, 114, 182, 0.15);
+                --badge-inkaso-color: #f472b6;
+                --badge-other-bg: rgba(255, 255, 255, 0.08);
+                --badge-other-color: #94a3b8;
+                --highlight-row-bg: rgba(244, 114, 182, 0.08);
+                --highlight-row-border: rgba(244, 114, 182, 0.3);
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-body);
+            background-image:
+                radial-gradient(ellipse at 20% 50%, var(--bg-blob-1) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, var(--bg-blob-2) 0%, transparent 50%),
+                radial-gradient(ellipse at 60% 80%, var(--bg-blob-3) 0%, transparent 50%);
+            min-height: 100vh;
+            padding: 24px;
+            color: var(--color-text);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+
+        h1 {
+            color: var(--color-heading);
+            text-align: center;
+            margin-bottom: 6px;
+            font-size: 2.2em;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--color-text-secondary);
+            font-size: 1.05em;
+            font-weight: 400;
+            margin-bottom: 28px;
+            animation: fadeInUp 0.6s ease-out 0.1s both;
+        }
+
+        /* ===== Info cards row ===== */
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+            animation: fadeInUp 0.5s ease-out 0.15s both;
+        }
+
+        .info-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--bg-card-border);
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 8px 32px var(--bg-card-shadow);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px var(--bg-card-shadow-hover);
+        }
+
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            border-radius: 14px 14px 0 0;
+        }
+
+        .info-card:nth-child(1)::before { background: linear-gradient(90deg, #6366f1, #818cf8); }
+        .info-card:nth-child(2)::before { background: linear-gradient(90deg, #a855f7, #c084fc); }
+        .info-card:nth-child(3)::before { background: linear-gradient(90deg, #ec4899, #f472b6); }
+
+        .info-card-label {
+            font-size: 0.82em;
+            font-weight: 500;
+            color: var(--color-label);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .info-card-value {
+            font-size: 1.5em;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .info-card:nth-child(1) .info-card-value { color: var(--color-accent); }
+        .info-card:nth-child(2) .info-card-value { color: var(--color-accent-2); }
+        .info-card:nth-child(3) .info-card-value { color: var(--color-accent-3); }
+
+        /* ===== Main table card ===== */
+        .table-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--bg-card-border);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px var(--bg-card-shadow);
+            overflow: hidden;
+            position: relative;
+            animation: fadeInUp 0.5s ease-out 0.25s both;
+        }
+
+        .table-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--total-gradient-from), var(--total-gradient-via), var(--total-gradient-to));
+        }
+
+        .table-card-header {
+            padding: 22px 28px 16px;
+            border-bottom: 1px solid var(--card-title-border);
+        }
+
+        .table-card-title {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: var(--card-title-color);
+            letter-spacing: -0.2px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.92em;
+        }
+
+        thead th {
+            background: var(--table-header-bg);
+            color: var(--table-header-color);
+            font-weight: 600;
+            padding: 12px 16px;
+            text-align: left;
+            white-space: nowrap;
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--table-border);
+        }
+
+        thead th:first-child { text-align: center; }
+        thead th:nth-child(2) { text-align: right; }
+
+        tbody td {
+            padding: 11px 16px;
+            border-bottom: 1px solid var(--table-border);
+            color: var(--color-text);
+            vertical-align: middle;
+        }
+
+        tbody td:first-child {
+            text-align: center;
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+        }
+
+        tbody td:nth-child(2) {
+            text-align: right;
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+            color: var(--color-value);
+        }
+
+        tbody tr:nth-child(even) { background: var(--table-row-even); }
+        tbody tr:hover { background: var(--table-row-hover); }
+
+        tbody tr.highlight {
+            background: var(--highlight-row-bg);
+            border-left: 3px solid var(--highlight-row-border);
+        }
+        tbody tr.highlight:hover { background: var(--highlight-row-bg); }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.82em;
+            font-weight: 500;
+            background: var(--badge-bg);
+            color: var(--badge-color);
+        }
+
+        .badge-inkaso {
+            background: var(--badge-inkaso-bg);
+            color: var(--badge-inkaso-color);
+        }
+
+        .badge-other {
+            background: var(--badge-other-bg);
+            color: var(--badge-other-color);
+        }
+
+        tr.sum-row td {
+            background: var(--table-sum-bg);
+            font-weight: 700;
+            border-top: 2px solid var(--table-border);
+            padding: 14px 16px;
+            font-size: 1em;
+        }
+
+        tr.sum-row td:nth-child(2) {
+            font-size: 1.15em;
+            background: linear-gradient(135deg, var(--total-gradient-from), var(--total-gradient-via), var(--total-gradient-to));
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ===== Total summary ===== */
+        .total-summary {
+            background: var(--bg-section);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--bg-card-border);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 8px 32px var(--bg-card-shadow);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin-top: 24px;
+            animation: fadeInUp 0.5s ease-out 0.35s both;
+        }
+
+        .total-summary::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--total-gradient-from), var(--total-gradient-via), var(--total-gradient-to));
+        }
+
+        .total-summary .section-title {
+            font-weight: 700;
+            font-size: 1.1em;
+            color: var(--section-title-color);
+            letter-spacing: -0.2px;
+            margin-bottom: 4px;
+        }
+
+        .total-amount {
+            font-size: 2.8em;
+            font-weight: 800;
+            margin: 12px 0 6px;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, var(--total-gradient-from), var(--total-gradient-via), var(--total-gradient-to));
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 4s linear infinite;
+        }
+
+        .total-note {
+            color: var(--color-note);
+            font-size: 0.88em;
+        }
+
+        .footer {
+            text-align: center;
+            color: var(--color-update);
+            margin-top: 20px;
+            font-size: 0.85em;
+            animation: fadeInUp 0.5s ease-out 0.45s both;
+        }
+
+        .footer strong { color: var(--color-update-strong); }
+
+        /* ===== Scrollbar ===== */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover); }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 768px) {
+            body { padding: 16px 10px; }
+            h1 { font-size: 1.6em; }
+            .subtitle { font-size: 0.95em; margin-bottom: 20px; }
+
+            .info-cards {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .info-card {
+                padding: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                text-align: left;
+            }
+
+            .info-card-label { margin-bottom: 0; font-size: 0.8em; }
+            .info-card-value { font-size: 1.25em; }
+
+            .table-card-header { padding: 16px 18px 12px; }
+            .table-card-title { font-size: 1.05em; }
+
+            table { font-size: 0.85em; }
+            thead th { padding: 10px 12px; font-size: 0.78em; }
+            tbody td { padding: 9px 12px; }
+
+            /* Hide Info column on small screens */
+            thead th:nth-child(4),
+            tbody td:nth-child(4) { display: none; }
+
+            .total-summary { padding: 24px 18px; }
+            .total-amount { font-size: 2.2em; }
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 1.35em; }
+            .info-card-value { font-size: 1.1em; }
+            table { font-size: 0.8em; }
+            thead th { padding: 8px 8px; }
+            tbody td { padding: 8px 8px; }
+
+            .total-amount { font-size: 1.8em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💳 Platby &ndash; výpočet</h1>
+        <div class="subtitle">Mesačný prehľad pravidelných platieb</div>
+
+        <!-- Info cards -->
+        <div class="info-cards">
+            <div class="info-card">
+                <div class="info-card-label">💶 Suma do výplaty</div>
+                <div class="info-card-value" id="sumToPayday">&mdash;</div>
+            </div>
+            <div class="info-card">
+                <div class="info-card-label">📅 Dnešný dátum</div>
+                <div class="info-card-value" id="todayDate">&mdash;</div>
+            </div>
+            <div class="info-card">
+                <div class="info-card-label">💰 Výplata</div>
+                <div class="info-card-value" id="paydayDate">&mdash;</div>
+            </div>
+        </div>
+
+        <!-- Table card -->
+        <div class="table-card">
+            <div class="table-card-header">
+                <div class="table-card-title">Prehľad platieb</div>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Dátum</th>
+                            <th>Suma</th>
+                            <th>Druh platby</th>
+                            <th>Info</th>
+                        </tr>
+                    </thead>
+                    <tbody id="paymentsBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Total summary -->
+        <div class="total-summary">
+            <div class="section-title">Celková mesačná suma</div>
+            <div class="total-amount" id="totalAmount">&mdash;</div>
+            <div class="total-note">Súčet všetkých pravidelných platieb</div>
+        </div>
+
+        <div class="footer">
+            Dátumy sa vypočítavajú automaticky &middot; Aktualizované: <strong id="lastUpdate">&mdash;</strong>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * Payment data from xlsx.
+         * Amounts and names are static, dates are computed dynamically.
+         *
+         * dayRule:
+         *   'next' → =DATE(YEAR(H2), IF(DAY(H2)<10, MONTH(H2), MONTH(H2)+1), day)
+         *            These are early-month payments (1st, 4th, 6th) that move to
+         *            the next month when tomorrow's day >= 10.
+         *   'curr' → =DATE(YEAR(H2), MONTH(H2), day)
+         *            These payments always use the current month of tomorrow.
+         */
+        const payments = [
+            { amount: 30,    name: 'Šimek - nájom kancelárie',       info: 'trvalý príkaz', dayRule: 'next', day: 1  },
+            // { amount: 0,     name: 'Orange faktúra Katka',           info: 'inkaso',         dayRule: 'next', day: 4  },
+            { amount: 12,    name: 'Orange faktúra Marek',           info: 'inkaso',         dayRule: 'next', day: 6  },
+            { amount: 27,    name: 'Vodárenská spoločnosť',          info: 'trvalý príkaz', dayRule: 'curr', day: 12 },
+            { amount: 100,   name: 'EIC - Marek',                    info: 'trvalý príkaz', dayRule: 'curr', day: 12 },
+            { amount: 50,    name: 'EIC - deti',                     info: 'trvalý príkaz', dayRule: 'curr', day: 12 },
+            { amount: 50,    name: 'IAD Marek',                      info: 'trvalý príkaz', dayRule: 'curr', day: 12 },
+            { amount: 20,    name: 'Raiffeisen sporenie na rezervu', info: 'trvalý príkaz', dayRule: 'curr', day: 14 },
+            // { amount: 0,     name: 'Skylink',                        info: '–',              dayRule: 'curr', day: 15 },
+            { amount: 32,    name: 'Allianz Marek',                  info: 'trvalý príkaz', dayRule: 'curr', day: 25 },
+            { amount: 69.26, name: 'Greenlogy',                      info: 'trvalý príkaz', dayRule: 'curr', day: 25 },
+            { amount: 20,    name: 'NN Katka',                       info: 'trvalý príkaz', dayRule: 'curr', day: 29 },
+            { amount: 28.26, name: 'NN Marek',                       info: 'trvalý príkaz', dayRule: 'curr', day: 29 }
+        ];
+
+        // ===== Date calculation (mirrors xlsx formulas) =====
+
+        /** H2 = TODAY()+1 */
+        function getTomorrow() {
+            const d = new Date();
+            d.setDate(d.getDate() + 1);
+            d.setHours(0, 0, 0, 0);
+            return d;
+        }
+
+        /**
+         * Calculates the NEXT upcoming payment date for a row.
+         * If the payment day has already passed this month, it moves to next month.
+         * This ensures we always show future dates, never past ones.
+         */
+        function getPaymentDate(payment, today) {
+            const year = today.getFullYear();
+            const month = today.getMonth(); // 0-based
+
+            // Start with current month
+            let candidate = new Date(year, month, payment.day);
+
+            // If this date is before today, move to next month
+            if (candidate < today) {
+                candidate = new Date(year, month + 1, payment.day);
+            }
+
+            return candidate;
+        }
+
+        /**
+         * H3 (výplata) = DATE(YEAR(H2), IF(DAY(H2)<10, MONTH(H2), MONTH(H2)+1), 10)
+         */
+        function getPayday(tomorrow) {
+            const year = tomorrow.getFullYear();
+            const month = tomorrow.getMonth();
+            const dayOfTomorrow = tomorrow.getDate();
+            const targetMonth = dayOfTomorrow < 10 ? month : month + 1;
+            return new Date(year, targetMonth, 10);
+        }
+
+        // ===== Formatting =====
+
+        function formatDate(date) {
+            return date.getDate().toString().padStart(2, '0') + '.' +
+                   (date.getMonth() + 1).toString().padStart(2, '0') + '.' +
+                   date.getFullYear();
+        }
+
+        function formatAmount(amount) {
+            return new Intl.NumberFormat('sk-SK', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(amount) + ' €';
+        }
+
+        function getBadgeClass(info) {
+            if (info === 'inkaso') return 'badge badge-inkaso';
+            if (info === '–' || info === '-') return 'badge badge-other';
+            return 'badge';
+        }
+
+        // ===== Count-up animation =====
+
+        function animateValue(element, endValue, duration) {
+            const start = performance.now();
+            function step(timestamp) {
+                const elapsed = timestamp - start;
+                const progress = Math.min(elapsed / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+                element.textContent = formatAmount(endValue * eased);
+                if (progress < 1) requestAnimationFrame(step);
+            }
+            requestAnimationFrame(step);
+        }
+
+        // ===== Main render =====
+
+        function render() {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const payday = getPayday(today);
+
+            // Info cards
+            document.getElementById('todayDate').textContent = formatDate(today);
+            document.getElementById('paydayDate').textContent = formatDate(payday);
+
+            // Compute payment dates
+            const rows = payments.map(p => ({
+                ...p,
+                date: getPaymentDate(p, today)
+            }));
+
+            // Sum of payments between today and payday (inclusive)
+            const todayMs = today.getTime();
+            const paydayMs = payday.getTime();
+
+            let sumBetween = 0;
+            rows.forEach(r => {
+                const t = r.date.getTime();
+                if (t >= todayMs && t <= paydayMs) {
+                    sumBetween += r.amount;
+                }
+            });
+
+            animateValue(document.getElementById('sumToPayday'), sumBetween, 800);
+
+            // Total
+            const total = payments.reduce((s, p) => s + p.amount, 0);
+            animateValue(document.getElementById('totalAmount'), total, 1000);
+
+            // Sort: upcoming payments first (>= today, ascending by date),
+            // then past payments (< today, ascending by date)
+            const sorted = [...rows].sort((a, b) => {
+                const aMs = a.date.getTime();
+                const bMs = b.date.getTime();
+                const aUpcoming = aMs >= todayMs;
+                const bUpcoming = bMs >= todayMs;
+
+                // Upcoming before past
+                if (aUpcoming && !bUpcoming) return -1;
+                if (!aUpcoming && bUpcoming) return 1;
+
+                // Within same group, sort by date ascending
+                return aMs - bMs;
+            });
+
+            // Build table
+            const tbody = document.getElementById('paymentsBody');
+            let html = '';
+
+            sorted.forEach((r, i) => {
+                const t = r.date.getTime();
+                const hl = t >= todayMs && t <= paydayMs && r.amount > 0;
+                html += `<tr${hl ? ' class="highlight"' : ''}>
+                    <td>${formatDate(r.date)}</td>
+                    <td>${formatAmount(r.amount)}</td>
+                    <td>${r.name}</td>
+                    <td><span class="${getBadgeClass(r.info)}">${r.info}</span></td>
+                </tr>`;
+            });
+
+
+            tbody.innerHTML = html;
+
+            // Last update timestamp
+            const now = new Date();
+            document.getElementById('lastUpdate').textContent =
+                formatDate(now) + ' ' +
+                now.getHours().toString().padStart(2, '0') + ':' +
+                now.getMinutes().toString().padStart(2, '0');
+        }
+
+        window.addEventListener('load', render);
+    </script>
+</body>
+</html>
