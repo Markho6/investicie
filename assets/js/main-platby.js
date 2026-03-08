@@ -12,17 +12,17 @@
 const payments = [
     { amount: 30,    name: 'Šimek - nájom kancelárie',       info: 'trvalý príkaz', dayRule: 'next', day: 1  },
     // { amount: 0,     name: 'Orange faktúra Katka',           info: 'inkaso',         dayRule: 'next', day: 4  },
-    { amount: 12,    name: 'Orange faktúra Marek',           info: 'inkaso',         dayRule: 'next', day: 6  },
+    { amount: 12,    name: 'Orange - faktúra',           info: 'inkaso',         dayRule: 'next', day: 6  },
     { amount: 27,    name: 'Vodárenská spoločnosť',          info: 'trvalý príkaz', dayRule: 'curr', day: 12 },
     { amount: 100,   name: 'EIC - Marek',                    info: 'trvalý príkaz', dayRule: 'curr', day: 12 },
     { amount: 50,    name: 'EIC - deti',                     info: 'trvalý príkaz', dayRule: 'curr', day: 12 },
-    { amount: 50,    name: 'IAD Marek',                      info: 'trvalý príkaz', dayRule: 'curr', day: 12 },
-    { amount: 20,    name: 'Raiffeisen sporenie na rezervu', info: 'trvalý príkaz', dayRule: 'curr', day: 14 },
+    { amount: 50,    name: 'IAD - Marek',                      info: 'trvalý príkaz', dayRule: 'curr', day: 12 },
+    { amount: 20,    name: 'Raiffeisen - sporenie na rezervu', info: 'trvalý príkaz', dayRule: 'curr', day: 14 },
     // { amount: 0,     name: 'Skylink',                        info: '–',              dayRule: 'curr', day: 15 },
-    { amount: 32,    name: 'Allianz Marek',                  info: 'trvalý príkaz', dayRule: 'curr', day: 25 },
+    { amount: 32,    name: 'Allianz - Marek',                  info: 'trvalý príkaz', dayRule: 'curr', day: 25 },
     { amount: 69.26, name: 'Greenlogy',                      info: 'trvalý príkaz', dayRule: 'curr', day: 25 },
-    { amount: 20,    name: 'NN Katka',                       info: 'trvalý príkaz', dayRule: 'curr', day: 29 },
-    { amount: 28.26, name: 'NN Marek',                       info: 'trvalý príkaz', dayRule: 'curr', day: 29 }
+    { amount: 20,    name: 'NN - Katka',                       info: 'trvalý príkaz', dayRule: 'curr', day: 29 },
+    { amount: 28.26, name: 'NN - Marek',                       info: 'trvalý príkaz', dayRule: 'curr', day: 29 }
 ];
 
 // ===== Date calculation (mirrors xlsx formulas) =====
