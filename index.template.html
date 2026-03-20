@@ -5,12 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prehľad investícií</title>
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-
+    
+    <!-- Config File -->
+    <script src="assets/js/config.js?v=1"></script>
+    
     <!-- Template Main CSS File -->
     <link href="assets/css/style.css?v=1" rel="stylesheet">
 </head>
@@ -33,6 +36,14 @@
                         <span class="info-value" id="marekDate">{{MAREK_DATE}}</span>
                     </div>
                     <div class="amount" id="marekAmount" data-value="{{MAREK_AMOUNT}}">{{MAREK_AMOUNT_FORMATTED}} €</div>
+                    <div class="info-row" data-value="{{MAREK_OLD_AMOUNT}}">
+                        <span class="info-label">📜 História:</span>
+                        <span class="info-value"><a href="javascript:void(0)" onclick="openHistoryFile('Marek (8898636)')" style="color: inherit; cursor: pointer; text-decoration: underline;">{{MAREK_OLD_AMOUNT_FORMATTED}} €</a></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">📈 Rozdiel:</span>
+                        <span class="info-value">{{MAREK_DIFFERENCE_FORMATTED}} €</span>
+                    </div>
                 </div>
             </div>
 
@@ -45,6 +56,14 @@
                         <span class="info-value" id="katkaDate">{{KATKA_DATE}}</span>
                     </div>
                     <div class="amount" id="katkaAmount" data-value="{{KATKA_AMOUNT}}">{{KATKA_AMOUNT_FORMATTED}} €</div>
+                    <div class="info-row" data-value="{{KATKA_OLD_AMOUNT}}">
+                        <span class="info-label">📜 História:</span>
+                        <span class="info-value"><a href="javascript:void(0)" onclick="openHistoryFile('Katka Amundi')" style="color: inherit; cursor: pointer; text-decoration: underline;">{{KATKA_OLD_AMOUNT_FORMATTED}} €</a></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">📈 Rozdiel:</span>
+                        <span class="info-value">{{KATKA_DIFFERENCE_FORMATTED}} €</span>
+                    </div>
                 </div>
             </div>
 
@@ -57,6 +76,14 @@
                         <span class="info-value" id="detiDate">{{DETI_DATE}}</span>
                     </div>
                     <div class="amount" id="detiAmount" data-value="{{DETI_AMOUNT}}">{{DETI_AMOUNT_FORMATTED}} €</div>
+                    <div class="info-row" data-value="{{DETI_OLD_AMOUNT}}">
+                        <span class="info-label">📜 História:</span>
+                        <span class="info-value"><a href="javascript:void(0)" onclick="openHistoryFile('Deti (8499993)')" style="color: inherit; cursor: pointer; text-decoration: underline;">{{DETI_OLD_AMOUNT_FORMATTED}} €</a></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">📈 Rozdiel:</span>
+                        <span class="info-value">{{DETI_DIFFERENCE_FORMATTED}} €</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -77,5 +104,11 @@
 
     <!-- Template Main JS File -->
     <script src="assets/js/main.js?v=1"></script>
+    <script>
+        function openHistoryFile(sheetName) {
+            const fileUrl = `file:///C:/Users/${CONFIG.username}/OneDrive/Dokumenty/financie.xlsx#'${sheetName}'!A1`;
+            window.open(fileUrl, '_blank');
+        }
+    </script>
 </body>
 </html>
